@@ -1,0 +1,20 @@
+
+10-1
+使用 form input textarea select option 等元素設計表單介面
+
+<form>元素
+accept="...":設定MIME類型，以逗點隔開，作為伺服器處理表單資料的根據，EX:accept="image/gif,image/jpeg"。
+accept-charset="...":設定表單的編碼方式，EX:accept-charset="ISO..."
+action="url":設定表單處理程式的相對或絕對位置。
+name="...":設定表單名稱(限英文且唯一)。
+
+
+10-2
+web 是採取主從式架構， 從client存取server的資源和服務，
+我們可以用PHP內建的header()傳送自訂的HTTP Header，常見的應用有重新導向；使用者帳密認證等等
+語法為:
+header(string str[, bool replace [, int http_response_code]])
+<?php 
+header('www-Authenticate:Negotiate');
+header('www-Authenticate:Negotiate',NTLM,FALSE);
+?>

@@ -1,0 +1,1 @@
+PHP內建函式 setcookie();
