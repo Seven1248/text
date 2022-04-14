@@ -1,0 +1,110 @@
+https://github.com/bradchao/me21
+
+使用命令提示字元操作mysql
+cd c:/mamp/bin/mysql/bin         //資料庫的路徑
+mysql -u root(帳號) -p (密碼)    //輸入登入帳號
+(輸入密碼)
+quit                             //離開mysql
+
+-----
+
+show databases;    //展示電腦的database
+show tables;       //展示資料庫的資料表
+create database db1;  //建立db1的資料表
+drop database db1; //刪除 db1資料表 (無法復原!!)
+
+
+use db1;
+Database changed
+select database();
++------------+
+| database() |
++------------+
+| db1        |
++------------+
+
+
+create table tb1 (f1 varchar(10), f2 varchar(10), f3 varchar(10));
+desc tb1;                             //描述 tabel tb1;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| f1    | varchar(10) | YES  |     | NULL    |       |
+| f2    | varchar(10) | YES  |     | NULL    |       |
+| f3    | varchar(10) | YES  |     | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+
+insert into tb1(f1,f2,f3) values("aaaa",'bbb','ccc');
+select * from tb1;                     //選擇全部資料
++------+------+------+
+| f1   | f2   | f3   |
++------+------+------+
+| aaaa | bbb  | ccc  |
++------+------+------+
+
+delete from tb1 where f1 = 'aaaa';        //刪除 tb1 中 f1 符合aaaa 的資料
+
+USE class2;
+DESC students;
+SELECT * FROM students;
+
+insert into students (cname, cBirthday, cEmail) values ('哉惡','1993-10-06','mayr81214@gmail.com');
+insert into students (cName, cBirthday, cSex, cEmail) values ('哉惡','1993-10-06','m','mayr81214@gmail.com');
+//增加資訊，資訊必須符合條件才可輸入，下列錯誤資訊示範
+
+> INSERT INTO students (cName,cSex, cBirthday) VALUES ('Brad','A', '1999-01-02');
+ERROR 1265 (01000): Data truncated for column 'cSex' at row 1
+INSERT INTO students (cSex, cBirthday) VALUES ('M', '1999-01-02');
+ERROR 1364 (HY000): Field 'cName' doesn't have a default value
+
+
+//更新資料  update set
+update students set cphone ='0921652906' where cname='哉惡';  //更新資料
+
+
+------------------//sql數學計算式
+mysql> select 10/3,10 div 3;select 10+3, 15/4;
++--------+----------+
+| 10/3   | 10 div 3 |
++--------+----------+
+| 3.3333 |        3 |
++--------+----------+
+1 row in set (0.00 sec)
+
++------+--------+
+| 10+3 | 15/4   |
++------+--------+
+|   13 | 3.7500 |
++------+--------+
+1 row in set (0.00 sec)
+
+
+
+//北風資料庫
+use northwind;   //使用 database northwind ;
+SELECT * FROM Employees\G;  //會發生很有趣的事情  \G必須大寫
+
+SELECT Title, FirstName , LastName FROM Employees;                           //搜尋特定欄位
+SELECT Title, FirstName , LastName FROM Employees order by firstname;        //依照規則排序
+SELECT Title, FirstName , LastName FROM Employees order by firstname desc;   //倒敘排列
+SELECT Title, FirstName , LastName FROM Employees ORDER BY Title DESC, FirstName; //指定排序順位
+
+//北風查詢練習 SELECT 欄位 FROM 資料表 WHERE 條件式 ORDER BY 項目 DESC;
+SELECT FirstName, LastName, City, Region FROM Employees where region is null;
+select firstname, lastname, city from employees where lastname >= 'j' order by lastname;
+select firstname, lastname, city, region from employees where region is not null;
+
+//#更換至 table products
+select productname, unitsinstock, reorderlevel from products ;
+select productname, unitsonorder, unitsinstock,  reorderlevel from products where unitsinstock < reorderlevel;
+select productname, unitsonorder, unitsinstock,  reorderlevel from products where unitsinstock < reorderlevel and unitsonorder > unitsinstock;
+Select productname, UnitSonOrder, UnitSinStock,  ReorderLevel from products where unitsinstock < reorderlevel or unitsonorder > unitsinstock;
+//所有的訂單中,超過客戶需求日期才寄出的訂單
+select orderID, CustomerID, OrderDate, RequiredDate, ShippedDate from orders where shippedDate > requiredDate;
+select orderID, CustomerID, OrderDate, RequiredDate, ShippedDate from orders where shippedDate > requiredDate order by customerID, shippedDate desc;
+
+
+
+
+
+

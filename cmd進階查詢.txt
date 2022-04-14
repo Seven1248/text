@@ -1,0 +1,240 @@
+設定cmd：     使用cmd時遇到亂碼的解決方法
+chcp 65001  就是換成UTF-8內碼表 .
+chcp 936 可以換回預設的GBK
+chcp 437 是美國英語 
+
+
+
+use northwind ;  //使用北風database
+select concat(firstName , lastname) from employees;
+select concat(firstName ," ", lastname) from employees;
+select concat(firstName ," ", lastname) AS Name from employees;
+select concat(firstName ," ", lastname) Name from employees;
+select employeeID, concat(firstName ," ", lastname) Name, title from employees;
++------------+------------------+--------------------------+
+| EmployeeID | FName            | Title                    |
++------------+------------------+--------------------------+
+|          1 | Nancy Davolio    | Sales Representative     |
+|          2 | Andrew Fuller    | Vice President, Sales    |
+|          3 | Janet Leverling  | Sales Representative     |
+|          4 | Margaret Peacock | Sales Representative     |
+|          5 | Steven Buchanan  | Sales Manager            |
+|          6 | Michael Suyama   | Sales Representative     |
+|          7 | Robert King      | Sales Representative     |
+|          8 | Laura Callahan   | Inside Sales Coordinator |
+|          9 | Anne Dodsworth   | Sales Representative     |
++------------+------------------+--------------------------+
+
+select OrderId, Freight, Freight * 1.1 FreightTotal from orders where  Freight * 1.1 >=500;
+select ProductID, UnitPrice, Quantity, UnitPrice * Quantity total from orderDetails where productId = 1;
+select ProductID, UnitPrice, Quantity, floor(UnitPrice * Quantity) total from orderDetails where productId = 1 and UnitPrice = 14.4;
++-----------+-----------+----------+-------+
+| ProductID | UnitPrice | Quantity | total |
++-----------+-----------+----------+-------+
+|         1 |   14.4000 |       45 |   648 |
+|         1 |   14.4000 |       18 |   259 |
+|         1 |   14.4000 |       20 |   288 |
+|         1 |   14.4000 |       15 |   216 |
+|         1 |   14.4000 |       12 |   172 |
+|         1 |   14.4000 |       15 |   216 |
+|         1 |   14.4000 |       10 |   144 |
+|         1 |   14.4000 |       24 |   345 |
+|         1 |   14.4000 |       15 |   216 |
++-----------+-----------+----------+-------+
+
+use class2;
+
+select 
+cName
+case
+ when cSex = 'F' then '小姐'
+ when cSex = 'M' then '先生'
+end
+from students;
+
+select concat(cName, ' ' , case when csex = 'F' THEN '小姐' when cSex = 'M' THEN '先生' End) title, cAddr  from students;
+
+select concat(cName, ' ' , case when csex = 'F' THEN '小姐' when cSex = 'M' THEN '先生' End,' 收') title, cAddr  from students;
+select concat(cName, ' ' , If(cSex='F','小姐','先生'),' 收') 標題, cAddr  from students;
++----------------------+---------------------------------+
+| 標題                 | cAddr                           |
++----------------------+---------------------------------+
+| 簡奉君 小姐 收       | 台北市濟洲北路12號              |
+| 黃靖輪 先生 收       | 台北市敦化南路93號5樓           |
+| 潘四敬 先生 收       | 台北市中央路201號7樓            |
+| 賴勝恩 先生 收       | 台北市建國路177號6樓            |
+| 黎楚寧 小姐 收       | 台北市忠孝東路520號6樓          |
+| 蔡中穎 先生 收       | 台北市三民路1巷10號             |
+| 徐佳螢 小姐 收       | 台北市仁愛路100號               |
+| 林雨媗 小姐 收       | 台北市民族路204號               |
+| 林心儀 小姐 收       | 台北市建國北路10號              |
+| 王燕博 先生 收       | 台北市北環路2巷80號             |
++----------------------+---------------------------------+
+
+SELECT 欄位1, 欄位2, ... FROM 資料表 WHERE 條件式 ORDER BY ...
+SELECT 欄位1, 欄位2, ... FROM 資料表 WHERE 條件式 GROUP BY ... ORDER BY ...
+
+select csex, count(*) from students group by cSex;
+select csex, count(*) 數量 from students group by cSex;
++------+--------+
+| csex | 數量   |
++------+--------+
+| F    |      8 |
+| M    |      7 |
++------+--------+
+
+ALTER TABLE `students` ADD `score` INT UNSIGNED NOT NULL DEFAULT '0' AFTER `cAddr`;  //新增score在addr後
+alter table `students` add `math` int unsigned not null default '0' after `score`;
+update students set score = floor(rand()*101) where score = 0 ;
+update students set math = floor(rand()*101) where math = 0 ;
+
+select csex, count(*) , sum(score), avg(score), sum(score), min(score), max(score) from students group by csex;
++------+----------+------------+------------+------------+------------+------------+
+| csex | count(*) | sum(score) | avg(score) | sum(score) | min(score) | max(score) |
++------+----------+------------+------------+------------+------------+------------+
+| F    |        8 |        548 |    68.5000 |        548 |          4 |         96 |
+| M    |        7 |        369 |    52.7143 |        369 |         23 |         74 |
++------+----------+------------+------------+------------+------------+------------+
+
+//使用別名與having
+select csex 性別, count(*) 數量, sum(score), avg(score) 平均, sum(score), min(score), max(score) from students group by csex having avg(score) > 60;   
++------+------+------------+---------+------------+------------+------------+
+| 性別 | 數量 | sum(score) | 平均    | sum(score) | min(score) | max(score) |
++------+------+------------+---------+------------+------------+------------+
+| F    |    8 |        548 | 68.5000 |        548 |          4 |         96 |
++------+------+------------+---------+------------+------------+------------+
+
+select city, count(*) nums from employees group by city;
+select city, count(*) nums from employees group by city having nums >=2;
++---------+------+
+| city    | nums |
++---------+------+
+| London  |    4 |
+| Seattle |    2 |
++---------+------+
+
+select * from employees;
+SELECT City, COUNT(*) Nums FROM Employees WHERE Title = 'Sales Representative' GROUP BY City HAVING Nums > 1;
++--------+------+
+| City   | Nums |
++--------+------+
+| London |    3 |
++--------+------+
+
+//distinct 獨特
+select  distinct city from employees;
+select count(distinct city) from employees;
++----------------------+
+| count(distinct city) |
++----------------------+
+|                    5 |
++----------------------+
+
+//訂單明細中各商品的總銷售量: ProductID, sum
+SELECT `productid`, sum(Quantity) sum FROM `orderdetails` group by `productid` having sum >=1000 order by sum limit 0, 3;
++-----------+------+
+| productid | sum  |
++-----------+------+
+|        21 | 1016 |
+|         2 | 1057 |
+|        71 | 1057 |
++-----------+------+
+
+SELECT `productid`, sum(Quantity) sum , avg(unitprice) avg FROM `orderdetails` group by `productid` having sum >=1000 order by sum limit 0, 10;
+
+
+統計一下各個商品的平均單價
+SELECT `productid`, sum(Quantity) sum , ((unitprice * quantity) / sum(Quantity)) avg FROM `orderdetails` group by `productid` having sum >=1000 order by sum limit 0, 10;
+
+SELECT ProductID,SUM(Quantity) sump, SUM(UnitPrice * Quantity) sump, SUM(UnitPrice * Quantity) / SUM(Quantity) avg FROM OrderDetails GROUP BY ProductID;
+
+統計各個客戶的訂單數量
+select customerid, count(*) nums from orders group by customerid order by nums limit 0, 10;
+SELECT CustomerID, COUNT(*) nums FROM Orders GROUP BY CustomerID HAVING nums < 10 ORDER BY nums DESC;
+
+//round 四捨五入至x位
+select freight, freight from orders limit 0, 10;
+select freight, round(freight, 1) fre from orders limit 0, 10;
+select productname, concat('$',unitprice) price, concat('$', cast(unitprice as char(10))) cas , unitsinstock from products limit 10;
+select productid, productname from products order by productid limit 0 , 10;
+
+//應用 求年齡
+select lastname, birthdate, hiredate, year(birthdate) byear, year(hiredate), year(hiredate) - year(birthdate) age from employees;
+
+select datediff(day,'2022-4-3','2021-10-5') day;
+select lastname, birthdate, hiredate, year(hiredate)-year(birthdate) age, datediff(hiredate, birthdate) /365  from employees;
+select lastname, birthdate from employees where month(birthdate) = month(now());  //本月壽星
+
+
+
+//多資料庫查詢
+select orderid, customerid from orders where orderid = 10248;
+select customerid id, companyname from customers where customerid = 'vinet';
+select customerid id, companyname from customers where customerid = (select customerid from orders where orderid = 10248);
+1997 年有下訂單的客戶編號 => 客戶名稱
+select customerid, orderdate from orders where orderdate between '1997-01-01' and '1997-12-31';
+select CompanyName from customers where customerid in (select customerid from orders where orderdate between "1997-01-01" and "1997-12-31");
+SELECT CompanyName FROM Customers WHERE CustomerID IN (SELECT CustomerID FROM Orders WHERE OrderDate BETWEEN '1997-01-01' AND '1997-12-31');
+
+select productname, supplierid from products where supplierid in(select supplierid from suppliers where companyname in('tokyo traders',"mayumi's",'pavlova, ltd.'));
+select productid, productname from products where categoryid in(select categoryid from categories where categoryname = 'seafood');
+select categoryid, categoryname, description from categories;
+
+
+//Join 查詢, 合併表查詢
+SELECT table1.col1, table1.col2,..., table2.col1, ....  FROM table1 JOIN table2 ON (table1.col = table2.col)  WHERE 條件式
+
+select employees.employeeid, employees.firstname, employees.lastname, orders.orderid, orders.orderdate from employees join orders on(employees.employeeid = orders.employeeid);
+
+select employees.employeeid, concat(employees.firstname," ", employees.lastname) employeesName, count(orders.orderid) 成交筆數 from employees join orders on(employees.employeeid = orders.employeeid) group by employeeid;
++------------+------------------+----------+
+| employeeid | employeesName    | 成交筆數 |
++------------+------------------+----------+
+|          1 | Nancy Davolio    |      123 |
+|          2 | Andrew Fuller    |       96 |
+|          3 | Janet Leverling  |      127 |
+|          4 | Margaret Peacock |      156 |
+|          5 | Steven Buchanan  |       42 |
+|          6 | Michael Suyama   |       67 |
+|          7 | Robert King      |       72 |
+|          8 | Laura Callahan   |      104 |
+|          9 | Anne Dodsworth   |       43 |
++------------+------------------+----------+
+
+select employees.employeeid, employees.firstname, employees.lastname, orders.orderid, orders.orderdate from orders join employees on(orders.employeeid = employees.employeeid);
+select e.employeeid, concat(e.firstname," ", e.lastname) employeesName, o.orderid, o.orderdate from employees e join orders o on(e.employeeid = o.employeeid)order by o.orderdate desc limit 0,10;
++------------+------------------+---------+---------------------+
+| employeeid | employeesName    | orderid | orderdate           |
++------------+------------------+---------+---------------------+
+|          7 | Robert King      |   11074 | 1998-05-06 00:00:00 |
+|          8 | Laura Callahan   |   11075 | 1998-05-06 00:00:00 |
+|          4 | Margaret Peacock |   11076 | 1998-05-06 00:00:00 |
+|          1 | Nancy Davolio    |   11077 | 1998-05-06 00:00:00 |
+|          2 | Andrew Fuller    |   11070 | 1998-05-05 00:00:00 |
+|          1 | Nancy Davolio    |   11071 | 1998-05-05 00:00:00 |
+|          4 | Margaret Peacock |   11072 | 1998-05-05 00:00:00 |
+|          2 | Andrew Fuller    |   11073 | 1998-05-05 00:00:00 |
+|          1 | Nancy Davolio    |   11067 | 1998-05-04 00:00:00 |
+|          8 | Laura Callahan   |   11068 | 1998-05-04 00:00:00 |
++------------+------------------+---------+---------------------+
+
+
+多重JOIN
+SELECT tb1.col1, tb2.col2, tb3.col3 FROM tb1  JOIN tb2 ON (tb1.colx = tb2.colx)  JOIN tb3 ON (tb2.coly = tb3.coly)
+......
+select o.orderid, c.companyname, e.lastname from orders o join employees e on(o.employeeid = e.employeeid) join customers c on(o.customerid = c.customerid) where o.shippeddate > o.requireddate order by c.companyname;
+
+哪些公司的訂單數量在10筆以上(在1997年以後), 顯示公司名稱
+select c.companyname, count(o.orderid) nums from orders o join customers c on(o.customerid = c.customerid) where o.orderdate >= '1997-01-01' group by c.companyname having count(o.orderid) >= 10 order by nums desc;
+
+SELECT CompanyName, ProductID, UnitPrice * Quantity * (1 - Discount) tp
+FROM OrderDetails od
+    JOIN Orders o ON (o.OrderID = od.OrderID)
+    JOIN Customers c ON (c.CustomerID = o.CustomerID)
+WHERE UnitPrice * Quantity * (1 - Discount) >= 10000
+
+//case when then when then
+select employeeid, lastname, city, country from employees;
+select employeeid, lastname, city, country from employees where row(city,country) in (select city, country from customers);
+select productid, max(unitprice) from orderdetails group by productid;
+
